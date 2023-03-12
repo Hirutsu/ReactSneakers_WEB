@@ -64,7 +64,10 @@ namespace ReactSneakers.WebApi.Controllers
                     user_role = user.Role,
                 };
 
-                BackgroundJob.Enqueue(() => HangFireSendEmail.SendEmailForLogin("react-sneaker@mail.ru"));
+                if(user.Role == Role.Admin)
+                {
+                    BackgroundJob.Enqueue(() => HangFireSendEmail.SendEmailForLogin("react-sneaker@mail.ru"));
+                }
                 //RabbitMqSendMessage.PublisherLogInAsAdmin();
 
                 return Ok(response);
