@@ -5,6 +5,7 @@ import SneakersItem from "./SneakersItem";
 
 const Orders = () => {
   const ordersData = useSelector(({ orders }) => orders.orders);
+  const userRole = useSelector(({ account }) => account.userRole);
 
   let orderedItems;
 
@@ -23,7 +24,7 @@ const Orders = () => {
     });
   }
 
-  return (
+  return userRole !== "" ? (
     <div className="inner__page">
       <div className="container">
         {ordersData.length > 0 ? (
@@ -65,6 +66,21 @@ const Orders = () => {
           </div>
         )}
       </div>
+    </div>
+  ) : (
+    <div className="container">
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
+        Вы не зарегистрированы, войдите, чтобы посмотреть ваши заказы
+      </div>
+      <Link
+        type="button"
+        className="green-button cart__empty__button"
+        to="/login"
+        style={{ marginTop: 20, marginBottom: 20 }}
+      >
+        sing In
+        <img alt="arrow" src="/react-sneakers/img/arrow.png" />
+      </Link>
     </div>
   );
 };

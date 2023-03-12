@@ -1,3 +1,9 @@
+using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using ReactSneakers.Helper;
 using ReactSneakers.Repositories;
 using ReactSneakers.Repositories.Interfaces;
 using ReactSneakers.Services;
@@ -8,8 +14,51 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
 builder.Services.AddCors();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = AuthOptions.ISSUER,
+        ValidateAudience = true,
+        ValidAudience = AuthOptions.AUEDIENCE,
+        ValidateLifetime = true,
+        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+        ValidateIssuerSigningKey = true,
+    };
+});
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddSingleton(new DbOptions() { ConnectionString = connectionString });
@@ -17,6 +66,28 @@ builder.Services.AddSingleton(new DbOptions() { ConnectionString = connectionStr
 builder.Services.AddTransient<ISneakerService, SneakerService>();
 builder.Services.AddTransient<ISneakerRepository, SneakerRepository>();
 
+var t = builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IAccountRepository, AccountRepository>();
+builder.Services.AddSingleton<TelegramBot>();
+
+ServiceProvider serviceProvider = t.BuildServiceProvider();
+
+TelegramBot tg = new TelegramBot(serviceProvider.GetService<IAccountService>());
+
+builder.Services.AddHangfire(configuration => configuration
+.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+.UseSimpleAssemblyNameTypeSerializer()
+.UseRecommendedSerializerSettings()
+.UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+{
+    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+    QueuePollInterval = TimeSpan.Zero,
+    UseRecommendedIsolationLevel = true,
+    DisableGlobalLocks = true
+}));
+
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -30,6 +101,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseHangfireDashboard("/hangfire");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

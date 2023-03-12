@@ -51,8 +51,8 @@ namespace ReactSneakers.Repositories
         {
             using (IDbConnection db = new SqlConnection(_dbOptions.ConnectionString))
             {
-                var querry = "INSERT INTO Sneaker (Title, Price) " +
-                    "VALUES (@Title, @Price); SELECT SCOPE_IDENTITY();";
+                var querry = "INSERT INTO Sneaker (Title, Price, Img) " +
+                    "VALUES (@Title, @Price, @Img); SELECT SCOPE_IDENTITY();";
                 return (int)(db.Query<decimal>(querry, sneaker).FirstOrDefault());
             }
         }
@@ -71,7 +71,7 @@ namespace ReactSneakers.Repositories
                     "Price = @Price " +
                     "WHERE Id = @Id";
 
-                db.Query<decimal>(querry, param);
+                db.Query(querry, param);
             }
         }
     }

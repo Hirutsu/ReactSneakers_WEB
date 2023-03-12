@@ -4,12 +4,15 @@ import { changeCartStatus } from "../store/cartStatusSlice";
 import { setPrice } from "../store/cartItemsSlice";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect } from "react";
+import { setIsSign } from "../store/accoutSlice";
 
 const Header = (props) => {
   const dispatch = useDispatch();
   const cartStatus = useSelector(({ cartStatus }) => cartStatus.status);
   const cartItems = useSelector(({ cartItems }) => cartItems.items);
   const totalPrice = useSelector(({ cartItems }) => cartItems.totalPrice);
+  const isSign = useSelector(({ account }) => account.isSign);
+  const userRole = useSelector(({ account }) => account.userRole);
 
   useEffect(() => {
     if (cartItems.length > 0) {
@@ -34,7 +37,13 @@ const Header = (props) => {
     }
   };
 
-  const setActive = ({ isActive }) => (isActive ? "nav-item-active" : null);
+  function LogOut() {
+    sessionStorage.clear();
+    dispatch(setIsSign(false));
+  }
+
+  const setActive = ({ isActive }) =>
+    isActive ? "nav-item-active" : "nav-item-not-active";
 
   return (
     <header className="header">
@@ -79,81 +88,37 @@ const Header = (props) => {
               </h1>
             </div>
           </Link>
+          {isSign && userRole == "Admin" ? (
+            <NavLink to="/admin" className={setActive}>
+              <li className="header__info__user">
+                <button type="button">Админская панель</button>
+              </li>
+            </NavLink>
+          ) : null}
 
           <ul className="header__info">
             <li className="header__info__cart" onClick={() => openCart()}>
-              <button type="button">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M19 6H17C17 3.2 14.8 1 12 1C9.2 1 7 3.2 7 6H5C3.9 6 3 6.9 3 8V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V8C21 6.9 20.1 6 19 6ZM12 3C13.7 3 15 4.3 15 6H9C9 4.3 10.3 3 12 3ZM19 20H5V8H19V20ZM12 12C10.3 12 9 10.7 9 9H7C7 11.8 9.2 14 12 14C14.8 14 17 11.8 17 9H15C15 10.7 13.7 12 12 12Z"
-                    fill="#9B9B9B"
-                  />
-                </svg>
-                <span className="header__info-balance">
-                  $ {totalPrice ?? 0}
-                </span>
-              </button>
+              Корзина
             </li>
             <NavLink to="/favorites" className={setActive}>
-              <li className="header__info__favorites">
-                <button type="button">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12.1 18.55L12 18.65L11.89 18.55C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5C9.04 5 10.54 6 11.07 7.36H12.93C13.46 6 14.96 5 16.5 5C18.5 5 20 6.5 20 8.5C20 11.39 16.86 14.24 12.1 18.55ZM16.5 3C14.76 3 13.09 3.81 12 5.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5C2 12.27 5.4 15.36 10.55 20.03L12 21.35L13.45 20.03C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3Z"
-                      fill="#9B9B9B"
-                    />
-                  </svg>
-                </button>
-              </li>
+              Избранное
             </NavLink>
-            <NavLink to="/orders" className={setActive}>
-              <li className="header__info__user">
-                <button type="button">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 4C13.0609 4 14.0783 4.42143 14.8284 5.17157C15.5786 5.92172 16 6.93913 16 8C16 9.06087 15.5786 10.0783 14.8284 10.8284C14.0783 11.5786 13.0609 12 12 12C10.9391 12 9.92172 11.5786 9.17157 10.8284C8.42143 10.0783 8 9.06087 8 8C8 6.93913 8.42143 5.92172 9.17157 5.17157C9.92172 4.42143 10.9391 4 12 4M12 6C11.4696 6 10.9609 6.21071 10.5858 6.58579C10.2107 6.96086 10 7.46957 10 8C10 8.53043 10.2107 9.03914 10.5858 9.41421C10.9609 9.78929 11.4696 10 12 10C12.5304 10 13.0391 9.78929 13.4142 9.41421C13.7893 9.03914 14 8.53043 14 8C14 7.46957 13.7893 6.96086 13.4142 6.58579C13.0391 6.21071 12.5304 6 12 6M12 13C14.67 13 20 14.33 20 17V20H4V17C4 14.33 9.33 13 12 13ZM12 14.9C9.03 14.9 5.9 16.36 5.9 17V18.1H18.1V17C18.1 16.36 14.97 14.9 12 14.9Z"
-                      fill="#9B9B9B"
-                    />
-                  </svg>
+            {isSign && userRole !== "" ? (
+              <NavLink to="/orders" className={setActive}>
+                Заказы
+              </NavLink>
+            ) : null}
+            {isSign ? (
+              <div>
+                <button onClick={() => LogOut()} style={{ marginLeft: 20 }}>
+                  Выйти({sessionStorage.getItem("user_name")})
                 </button>
-              </li>
-            </NavLink>
-            <NavLink to="/admin" className={setActive}>
-              <li className="header__info__user">
-                <button type="button">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 4C13.0609 4 14.0783 4.42143 14.8284 5.17157C15.5786 5.92172 16 6.93913 16 8C16 9.06087 15.5786 10.0783 14.8284 10.8284C14.0783 11.5786 13.0609 12 12 12C10.9391 12 9.92172 11.5786 9.17157 10.8284C8.42143 10.0783 8 9.06087 8 8C8 6.93913 8.42143 5.92172 9.17157 5.17157C9.92172 4.42143 10.9391 4 12 4M12 6C11.4696 6 10.9609 6.21071 10.5858 6.58579C10.2107 6.96086 10 7.46957 10 8C10 8.53043 10.2107 9.03914 10.5858 9.41421C10.9609 9.78929 11.4696 10 12 10C12.5304 10 13.0391 9.78929 13.4142 9.41421C13.7893 9.03914 14 8.53043 14 8C14 7.46957 13.7893 6.96086 13.4142 6.58579C13.0391 6.21071 12.5304 6 12 6M12 13C14.67 13 20 14.33 20 17V20H4V17C4 14.33 9.33 13 12 13ZM12 14.9C9.03 14.9 5.9 16.36 5.9 17V18.1H18.1V17C18.1 16.36 14.97 14.9 12 14.9Z"
-                      fill="#9B9B9B"
-                    />
-                  </svg>
-                </button>
-              </li>
-            </NavLink>
+              </div>
+            ) : (
+              <NavLink to="/logIn" className={setActive}>
+                Войти
+              </NavLink>
+            )}
           </ul>
         </div>
       </div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReactSneakers.Entities;
 using ReactSneakers.Services.Interfaces;
 
@@ -31,11 +32,13 @@ namespace ReactSneakers.WebApi.Controllers
 
         // POST api/<AboutController>
         [HttpPost]
+        [Authorize(Roles = nameof(Role.Admin))]
         public ActionResult<int> Post(Sneaker sneaker)
         {
-            if (_sneakerService.Post(sneaker) > 0)
+            int id = _sneakerService.Post(sneaker);
+            if (id > 0)
             {
-                return Ok();
+                return Ok(id);
             }
             else
             {
@@ -45,6 +48,7 @@ namespace ReactSneakers.WebApi.Controllers
 
         // PUT api/<AboutController>/5
         [HttpPut]
+        [Authorize(Roles = nameof(Role.Admin))]
         public void Put(Sneaker sneaker)
         {
             _sneakerService.Put(sneaker);
@@ -52,6 +56,7 @@ namespace ReactSneakers.WebApi.Controllers
 
         // DELETE api/<AboutController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = nameof(Role.Admin))]
         public void Delete(int id)
         {
             _sneakerService.DeleteById(id);
