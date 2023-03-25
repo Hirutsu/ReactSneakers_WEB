@@ -68,7 +68,7 @@ namespace ReactSneakers.WebApi.Controllers
                 {
                     BackgroundJob.Enqueue(() => HangFireSendEmail.SendEmailForLogin("react-sneaker@mail.ru"));
                 }
-                //RabbitMqSendMessage.PublisherLogInAsAdmin();
+                RabbitMqSendMessage.PublisherLogInAsAdmin();
 
                 return Ok(response);
             }

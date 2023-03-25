@@ -21,7 +21,7 @@ namespace ReactSneakers.WebApi.HangFire
             // адрес smtp-сервера и порт, с которого будем отправлять письмо
             SmtpClient smtp = new SmtpClient("smtp.mail.ru", 25);
             // логин и пароль
-            smtp.Credentials = new NetworkCredential("official_hirutsu@mail.ru", "0xWLK0gehrNCzHUeZfJS");
+            smtp.Credentials = new NetworkCredential("official_hirutsu@mail.ru", "");
             smtp.EnableSsl = true;
             smtp.Send(m);
         }

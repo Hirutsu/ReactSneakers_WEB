@@ -96,3 +96,8 @@ E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\bin\Debug\net6.0\Po
 E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\bin\Debug\net6.0\Telegram.Bot.dll
 E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\bin\Debug\net6.0\Telegram.Bots.dll
 E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\bin\Debug\net6.0\Telegram.Bots.Extensions.Polling.dll
+E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\obj\Debug\net6.0\staticwebassets\msbuild.ReactSneakers.WebApi.Microsoft.AspNetCore.StaticWebAssets.props
+E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\obj\Debug\net6.0\staticwebassets\msbuild.build.ReactSneakers.WebApi.props
+E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.ReactSneakers.WebApi.props
+E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.ReactSneakers.WebApi.props
+E:\ReactSneakers_WEB\ReactSneakers.Back\ReactSneakers.WebApi\obj\Debug\net6.0\staticwebassets.pack.json
