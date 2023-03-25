@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 
 public class TelegramBot
 {
-    private readonly ITelegramBotClient bot = new TelegramBotClient("6162207614:AAH-wx8jM8oRc-oQnVih1z_RorRrTuL0iJM");
+    private readonly ITelegramBotClient bot = new TelegramBotClient("api");
     private readonly IAccountService _accountService;
 
     public TelegramBot(IAccountService accountService)
